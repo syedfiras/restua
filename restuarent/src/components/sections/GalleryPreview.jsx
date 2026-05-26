@@ -9,6 +9,10 @@ function GalleryPreview() {
   return (
     <SectionWrapper id="gallery" className="gallery-section">
       <PageContainer>
+        <div className="journey-marker journey-marker--center">
+          <span>04</span>
+          <p>View ambience</p>
+        </div>
         <SectionHeading
           eyebrow="Atmosphere"
           title="A room designed for lingering."

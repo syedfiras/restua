@@ -18,6 +18,10 @@ function ReservationCTA() {
     <SectionWrapper id="reservation" className="reservation-section">
       <PageContainer>
         <Reveal>
+          <div className="journey-marker">
+            <span>06</span>
+            <p>Reserve</p>
+          </div>
           <GlassCard className="reservation-panel">
             <div className="reservation-panel__intro">
               <p className="eyebrow">Reservations</p>

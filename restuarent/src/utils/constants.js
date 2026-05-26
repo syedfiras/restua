@@ -10,12 +10,12 @@ export const COLORS = {
 }
 
 export const NAV_LINKS = [
-  { label: 'Home', href: '#home' },
-  { label: 'Menu', href: '#menu' },
-  { label: 'Story', href: '#story' },
-  { label: 'Gallery', href: '#gallery' },
-  { label: 'Reviews', href: '#reviews' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'Home', href: '/#home' },
+  { label: 'Menu', href: '/menu' },
+  { label: 'Experience', href: '/#experience' },
+  { label: 'Gallery', href: '/#gallery' },
+  { label: 'Reviews', href: '/#reviews' },
+  { label: 'Reserve', href: '/#reservation' },
 ]
 
 export const RESTAURANT = {

@@ -46,6 +46,10 @@ function Testimonials() {
   return (
     <SectionWrapper id="reviews" className="reviews-section">
       <PageContainer>
+        <div className="journey-marker">
+          <span>05</span>
+          <p>Build trust</p>
+        </div>
         <div className="reviews-section__intro">
           <SectionHeading
             eyebrow="Guest reviews"

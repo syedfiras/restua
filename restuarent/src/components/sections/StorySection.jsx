@@ -15,6 +15,10 @@ function StorySection() {
     <SectionWrapper id="story" tone="elevated" className="story-section" ref={ref}>
       <PageContainer className="story-section__grid">
         <Reveal className="story-section__copy">
+          <div className="journey-marker">
+            <span>02</span>
+            <p>Meet the brand</p>
+          </div>
           <p className="eyebrow">The story</p>
           <h2>Hospitality that moves at the pace of candlelight.</h2>
           <div className="gold-line" />

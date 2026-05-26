@@ -1,14 +1,46 @@
+import { useLocation, useNavigate } from 'react-router-dom'
 import { FiInstagram, FiMapPin, FiPhone } from 'react-icons/fi'
 import PageContainer from './PageContainer'
 import { navigation } from '../../data/navigation'
 import { RESTAURANT } from '../../utils/constants'
 
 function Footer() {
+  const location = useLocation()
+  const navigate = useNavigate()
+  const isHome = location.pathname === '/'
+
+  const handleNavClick = (event, href) => {
+    event.preventDefault()
+
+    if (href === '/menu') {
+      navigate('/menu')
+      return
+    }
+
+    const sectionId = href.replace('/', '')
+    if (isHome) {
+      const target = document.querySelector(sectionId)
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        window.history.pushState(null, '', sectionId)
+      }
+    } else {
+      navigate(href)
+    }
+  }
+
   return (
     <footer className="footer" id="contact">
       <PageContainer className="footer__inner">
         <div>
-          <a className="footer__brand" href="#home">
+          <a
+            className="footer__brand"
+            href="/"
+            onClick={(event) => {
+              event.preventDefault()
+              navigate('/')
+            }}
+          >
             <span>Atelier</span>
             <small>Nocturne</small>
           </a>
@@ -17,7 +49,7 @@ function Footer() {
 
         <nav aria-label="Footer navigation">
           {navigation.map((link) => (
-            <a key={link.href} href={link.href}>
+            <a key={link.href} href={link.href} onClick={(event) => handleNavClick(event, link.href)}>
               {link.label}
             </a>
           ))}

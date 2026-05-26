@@ -7,6 +7,24 @@ function Button({ children, className = '', variant = 'primary', as = 'a', href,
   const prefersReducedMotion = usePrefersReducedMotion()
   const Component = motion[as] || motion.a
   const linkProps = as === 'a' ? { href } : {}
+  const handleClick = (event) => {
+    props.onClick?.(event)
+
+    if (event.defaultPrevented || as !== 'a' || !href?.startsWith('#')) {
+      return
+    }
+
+    const target = document.querySelector(href)
+
+    if (target) {
+      event.preventDefault()
+      target.scrollIntoView({
+        behavior: prefersReducedMotion ? 'auto' : 'smooth',
+        block: 'start',
+      })
+      window.history.pushState(null, '', href)
+    }
+  }
 
   return (
     <Component
@@ -15,6 +33,7 @@ function Button({ children, className = '', variant = 'primary', as = 'a', href,
       whileHover={prefersReducedMotion ? undefined : buttonHover}
       whileTap={prefersReducedMotion ? undefined : buttonTap}
       {...props}
+      onClick={handleClick}
     >
       <span>{children}</span>
     </Component>

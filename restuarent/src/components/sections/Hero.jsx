@@ -56,8 +56,14 @@ function Hero() {
           <motion.p variants={prefersReducedMotion ? reducedMotionVariant : heroSubheadline} className="hero-section__subtitle">
             A quiet fine-dining room for candlelit courses, rare bottles, and intimate celebrations.
           </motion.p>
-          <motion.div variants={prefersReducedMotion ? reducedMotionVariant : heroCta}>
+          <motion.div className="hero-section__actions" variants={prefersReducedMotion ? reducedMotionVariant : heroCta}>
             <PremiumButton href="#reservation">Reserve a Table</PremiumButton>
+            <PremiumButton href="#menu" variant="outline">
+              View Menu
+            </PremiumButton>
+            <PremiumButton href="#experience" variant="ghost">
+              Explore Experience
+            </PremiumButton>
           </motion.div>
         </motion.div>
       </PageContainer>
@@ -69,6 +75,8 @@ function Hero() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.35, duration: 0.82 }}
       >
+        <span>Explore the evening</span>
+        <i aria-hidden="true" />
       </motion.a>
     </section>
   )
