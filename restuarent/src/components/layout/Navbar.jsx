@@ -1,251 +1,165 @@
 import { useEffect, useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { AnimatePresence, motion } from 'framer-motion'
-import { FiMenu, FiX } from 'react-icons/fi'
-import PremiumButton from '../ui/PremiumButton'
-import { navigation } from '../../data/navigation'
-import { RESTAURANT } from '../../utils/constants'
-import { usePrivateDining } from '../../context/PrivateDiningContext'
-import {
-  mobileNavItem,
-  mobileNavList,
-  mobileOverlay,
-  mobilePanel,
-  navEntrance,
-  reducedMotionVariant,
-} from '../../utils/motionVariants'
-import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion'
+import { motion, AnimatePresence } from 'framer-motion'
+import { HiOutlineMenuAlt4, HiX } from 'react-icons/hi'
+import { siteConfig } from '../../data/siteConfig'
+import { cn } from '../../utils/cn'
 
 function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false)
-  const [isOpen, setIsOpen] = useState(false)
-  const [activeHref, setActiveHref] = useState('#home')
-  const prefersReducedMotion = usePrefersReducedMotion()
-  const location = useLocation()
-  const navigate = useNavigate()
-  const isHome = location.pathname === '/'
-  const { openPrivateDining } = usePrivateDining()
+  const [scrolled, setScrolled] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
-    const onScroll = () => setIsScrolled(window.scrollY > 28)
-    onScroll()
+    const onScroll = () => setScrolled(window.scrollY > 100)
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
   useEffect(() => {
-    if (!isHome) return
-
-    const sections = navigation
-      .map((link) => {
-        const hash = link.href.startsWith('/') ? link.href.slice(1) : link.href
-        return document.querySelector(hash)
-      })
-      .filter(Boolean)
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
-
-        if (visible) {
-          setActiveHref(`#${visible.target.id}`)
-        }
-      },
-      {
-        rootMargin: '-28% 0px -58% 0px',
-        threshold: [0.16, 0.32, 0.5],
-      },
-    )
-
-    sections.forEach((section) => observer.observe(section))
-    return () => observer.disconnect()
-  }, [isHome])
-
-  useEffect(() => {
-    document.body.style.overflow = isOpen ? 'hidden' : ''
+    document.body.style.overflow = menuOpen ? 'hidden' : ''
     return () => {
       document.body.style.overflow = ''
     }
-  }, [isOpen])
+  }, [menuOpen])
 
-  useEffect(() => {
-    if (!isOpen) return undefined
-
-    const onKeyDown = (event) => {
-      if (event.key === 'Escape') {
-        setIsOpen(false)
-      }
+  const handleNavClick = (e, href) => {
+    e.preventDefault()
+    setMenuOpen(false)
+    const id = href.replace('#', '')
+    const target = document.getElementById(id)
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }
-
-    window.addEventListener('keydown', onKeyDown)
-    return () => window.removeEventListener('keydown', onKeyDown)
-  }, [isOpen])
-
-  const closeMenu = () => setIsOpen(false)
-
-  const handleNavClick = (event, href) => {
-    event.preventDefault()
-    closeMenu()
-
-    if (href === '/menu') {
-      if (isHome) {
-        const target = document.querySelector('#menu')
-        if (target) {
-          setActiveHref('#menu')
-          target.scrollIntoView({
-            behavior: prefersReducedMotion ? 'auto' : 'smooth',
-            block: 'start',
-          })
-          window.history.pushState(null, '', '#menu')
-        }
-      } else {
-        navigate('/menu')
-      }
-      return
-    }
-
-    const sectionId = href.replace('/', '')
-    if (isHome) {
-      const target = document.querySelector(sectionId)
-      if (target) {
-        setActiveHref(sectionId)
-        target.scrollIntoView({
-          behavior: prefersReducedMotion ? 'auto' : 'smooth',
-          block: 'start',
-        })
-        window.history.pushState(null, '', sectionId)
-      }
-    } else {
-      navigate(href)
-    }
-  }
-
-  const isActive = (href) => {
-    if (href === '/menu') return location.pathname === '/menu' || activeHref === '#menu'
-    if (isHome) return activeHref === href
-    return false
   }
 
   return (
-    <motion.header
-      className={`navbar ${isScrolled ? 'navbar--scrolled' : ''}`}
-      variants={prefersReducedMotion ? reducedMotionVariant : navEntrance}
-      initial="hidden"
-      animate="visible"
-    >
-      <Link
-        className="navbar__logo"
-        to="/"
-        onClick={() => closeMenu()}
-        aria-label={`${RESTAURANT.name} home`}
+    <>
+      <motion.header
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        className={cn(
+          'z-50 w-full transition-all duration-700 ease-luxury',
+          scrolled
+            ? 'fixed top-0 left-0 bg-cream/92 backdrop-blur-xl border-b border-cream-200 shadow-sm'
+            : 'absolute top-0 left-0 bg-transparent',
+        )}
       >
-        <span>Atelier</span>
-        <small>Nocturne</small>
-      </Link>
-
-      <nav className="navbar__links" aria-label="Primary navigation">
-        {navigation.map((link) => (
+        <nav className="page-container flex items-center justify-between h-[var(--nav-height)]">
           <a
-            key={link.href}
-            href={link.href}
-            className={isActive(link.href) ? 'navbar__link--active' : ''}
-            onClick={(event) => handleNavClick(event, link.href)}
+            href="#hero"
+            onClick={(e) => handleNavClick(e, '#hero')}
+            className="group flex flex-col leading-none"
+            data-cursor="view"
           >
-            {link.label}
+            <span
+              className={cn(
+                'font-display text-xl md:text-2xl font-semibold tracking-tight group-hover:text-accent transition-colors duration-500',
+                scrolled ? 'text-primary' : 'text-white',
+              )}
+            >
+              ATELIER
+            </span>
+            <span className="text-[0.55rem] tracking-wide uppercase text-accent font-medium mt-0.5">
+              Nocturne
+            </span>
           </a>
-        ))}
-      </nav>
 
-      <div className="navbar__actions">
-        <PremiumButton
-          className="navbar__cta navbar__cta--secondary"
-          variant="outline"
-          onClick={(event) => {
-            event.preventDefault()
-            closeMenu()
-            openPrivateDining()
-          }}
-        >
-          Private Dining
-        </PremiumButton>
-        <PremiumButton
-          className="navbar__cta"
-          href="/#reservation"
-          onClick={(event) => handleNavClick(event, '/#reservation')}
-        >
-          Reserve a Table
-        </PremiumButton>
-      </div>
+          <ul className="hidden lg:flex items-center gap-8 xl:gap-12">
+            {siteConfig.navLinks.map((link) => (
+              <li key={link.href}>
+                <a
+                  href={link.href}
+                  onClick={(e) => handleNavClick(e, link.href)}
+                  className={cn(
+                    'nav-link relative text-xs uppercase tracking-luxury transition-all duration-500 hover:tracking-[0.25em]',
+                    scrolled
+                      ? 'text-muted hover:text-primary'
+                      : 'text-white/65 hover:text-white',
+                  )}
+                  data-cursor="view"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
 
-      <button
-        className="navbar__menu-button"
-        type="button"
-        onClick={() => setIsOpen(true)}
-        aria-label="Open menu"
-        aria-expanded={isOpen}
-        aria-controls="mobile-menu"
-      >
-        <FiMenu />
-      </button>
+          <button
+            type="button"
+            className={cn(
+              'lg:hidden flex items-center justify-center w-11 h-11 rounded-full hover:border-accent transition-colors duration-300',
+              scrolled
+                ? 'text-primary border border-cream-300'
+                : 'text-white border border-white/25',
+            )}
+            onClick={() => setMenuOpen(true)}
+            aria-label="Open menu"
+          >
+            <HiOutlineMenuAlt4 className="text-xl" />
+          </button>
+        </nav>
+      </motion.header>
 
       <AnimatePresence>
-        {isOpen && (
+        {menuOpen && (
           <motion.div
-            id="mobile-menu"
-            className="mobile-menu"
-            role="dialog"
-            aria-modal="true"
-            aria-label="Site navigation"
-            variants={prefersReducedMotion ? reducedMotionVariant : mobileOverlay}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            className="fixed inset-0 z-[60] bg-cream flex flex-col items-center justify-center"
           >
-            <motion.div className="mobile-menu__panel" variants={prefersReducedMotion ? reducedMotionVariant : mobilePanel}>
-              <button className="mobile-menu__close" type="button" onClick={closeMenu} aria-label="Close menu">
-                <FiX />
-              </button>
-              <motion.nav
-                aria-label="Mobile navigation"
-                variants={prefersReducedMotion ? reducedMotionVariant : mobileNavList}
-              >
-                {navigation.map((link) => (
-                  <motion.a
-                    key={link.href}
-                    href={link.href}
-                    className={isActive(link.href) ? 'navbar__link--active' : ''}
-                    onClick={(event) => handleNavClick(event, link.href)}
-                    variants={prefersReducedMotion ? reducedMotionVariant : mobileNavItem}
-                  >
-                    {link.label}
-                  </motion.a>
-                ))}
-              </motion.nav>
-              <motion.div variants={prefersReducedMotion ? reducedMotionVariant : mobileNavItem} className="mobile-menu__buttons">
-                <PremiumButton
-                  variant="outline"
-                  onClick={(event) => {
-                    event.preventDefault()
-                    closeMenu()
-                    openPrivateDining()
+            <button
+              type="button"
+              className="absolute top-6 right-6 flex items-center justify-center w-11 h-11 text-primary border border-cream-300 rounded-full hover:border-accent transition-colors"
+              onClick={() => setMenuOpen(false)}
+              aria-label="Close menu"
+            >
+              <HiX className="text-xl" />
+            </button>
+
+            <nav className="flex flex-col items-center gap-6">
+              {siteConfig.navLinks.map((link, i) => (
+                <motion.a
+                  key={link.href}
+                  href={link.href}
+                  onClick={(e) => handleNavClick(e, link.href)}
+                  initial={{ y: 40, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: 20, opacity: 0 }}
+                  transition={{
+                    duration: 0.4,
+                    delay: i * 0.08,
+                    ease: [0.22, 1, 0.36, 1],
                   }}
+                  className="font-display text-4xl md:text-6xl text-primary hover:text-accent transition-colors duration-300"
+                  data-cursor="view"
                 >
-                  Private Dining
-                </PremiumButton>
-                <PremiumButton
-                  href="/#reservation"
-                  onClick={(event) => handleNavClick(event, '/#reservation')}
-                >
-                  Reserve a Table
-                </PremiumButton>
-              </motion.div>
-            </motion.div>
+                  {link.label}
+                </motion.a>
+              ))}
+            </nav>
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.header>
+
+      <style>{`
+        .nav-link:hover::after,
+        .nav-link::after {
+          content: '';
+          position: absolute;
+          bottom: -4px;
+          left: 0;
+          height: 1px;
+          width: 0;
+          background: var(--color-accent);
+          transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .nav-link:hover::after {
+          width: 100%;
+        }
+      `}</style>
+    </>
   )
 }
 

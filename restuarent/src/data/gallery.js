@@ -1,66 +1,97 @@
-import { heroMedia, pexelsPhoto, pexelsSrcSet, storyMedia } from './media'
+import { images } from './images'
 
-export const gallery = [
+export const galleryItems = [
   {
-    alt: 'A gourmet dish plated on a dark earthenware plate',
-    caption: 'Composed plates',
-    src: pexelsPhoto(5865244, 'pexels-photo-5865244', 1200),
-    srcSet: pexelsSrcSet(5865244, 'pexels-photo-5865244'),
-    sizes: '(max-width: 720px) 100vw, 50vw',
-    source: 'Pexels',
-    size: 'wide',
+    id: 'g1',
+    src: images.gallery.salon,
+    alt: 'Warm atmospheric restaurant interior with elegant lighting',
+    caption: 'The Salon',
+    layout: 'full',
+    aspect: '21/9',
+    offset: 0,
   },
   {
-    alt: 'Elegant fine dining table with plated course and glassware',
-    caption: 'Low-lit tables',
-    src: pexelsPhoto(30729106, 'pexels-photo-30729106', 1200),
-    srcSet: pexelsSrcSet(30729106, 'pexels-photo-30729106'),
-    sizes: '(max-width: 720px) 100vw, 25vw',
-    source: 'Pexels',
-    size: 'tall',
+    id: 'g2',
+    src: images.gallery.firstCourse,
+    alt: 'Gourmet dish with artistic plating',
+    caption: 'First Course',
+    layout: 'column-left',
+    aspect: '3/4',
+    offset: -60,
   },
   {
-    alt: 'Fine dining appetizer in a ceramic bowl',
-    caption: 'Seasonal courses',
-    src: pexelsPhoto(33474128, 'pexels-photo-33474128', 1200),
-    srcSet: pexelsSrcSet(33474128, 'pexels-photo-33474128'),
-    sizes: '(max-width: 720px) 100vw, 25vw',
-    source: 'Pexels',
-    size: 'small',
+    id: 'g3',
+    src: images.gallery.composedPlates,
+    alt: 'Fine dining dish beautifully presented',
+    caption: 'Composed Plates',
+    layout: 'column-right',
+    aspect: '4/5',
+    offset: 80,
   },
   {
-    alt: 'Gourmet salmon dish on a dark background',
-    caption: 'Quiet detail',
-    src: pexelsPhoto(29149758, 'pexels-photo-29149758', 1200),
-    srcSet: pexelsSrcSet(29149758, 'pexels-photo-29149758'),
-    sizes: '(max-width: 720px) 100vw, 25vw',
-    source: 'Pexels',
-    size: 'small',
+    id: 'g4',
+    src: images.gallery.cellarLight,
+    alt: 'Wine glasses and candlelight on table',
+    caption: 'Cellar Light',
+    layout: 'portrait',
+    aspect: '2/3',
+    offset: 0,
   },
   {
-    alt: 'Fine dining plate with herbs and sauce',
-    caption: 'Measured service',
-    src: pexelsPhoto(28705621, 'pexels-photo-28705621', 1200),
-    srcSet: pexelsSrcSet(28705621, 'pexels-photo-28705621'),
-    sizes: '(max-width: 720px) 100vw, 50vw',
-    source: 'Pexels',
-    size: 'wide',
+    id: 'g5',
+    src: images.gallery.nightcap,
+    alt: 'Chef preparing an elegant dish',
+    caption: 'Nightcap',
+    layout: 'column-left',
+    aspect: '4/5',
+    offset: 40,
   },
   {
-    alt: 'Close up of an exquisite plated dish',
-    caption: 'Final touches',
-    src: pexelsPhoto(34599568, 'pexels-photo-34599568', 1200),
-    srcSet: pexelsSrcSet(34599568, 'pexels-photo-34599568'),
-    sizes: '(max-width: 720px) 100vw, 25vw',
-    source: 'Pexels',
-    size: 'small',
+    id: 'g6',
+    src: images.gallery.thePass,
+    alt: 'Artfully plated gourmet course',
+    caption: 'The Pass',
+    layout: 'column-right',
+    aspect: '3/4',
+    offset: -40,
   },
 ]
 
-export const heroImage = heroMedia.src
-export const heroImageSrcSet = heroMedia.srcSet
-export const heroImageSizes = heroMedia.sizes
-export const heroImageAlt = heroMedia.alt
-export const storyImage = storyMedia.src
-export const storyImageSrcSet = storyMedia.srcSet
-export const storyImageSizes = storyMedia.sizes
+export const galleryStrip = [
+  {
+    id: 's1',
+    src: images.gallery.detailI,
+    alt: 'Close-up of gourmet dish',
+    caption: 'Detail I',
+  },
+  {
+    id: 's2',
+    src: images.gallery.detailII,
+    alt: 'Artfully plated food',
+    caption: 'Detail II',
+  },
+  {
+    id: 's3',
+    src: images.gallery.detailIII,
+    alt: 'Chef preparing ingredients',
+    caption: 'Detail III',
+  },
+  {
+    id: 's4',
+    src: images.gallery.detailIV,
+    alt: 'Elegant fine dining table setting',
+    caption: 'Detail IV',
+  },
+  {
+    id: 's5',
+    src: images.gallery.detailV,
+    alt: 'Restaurant interior with warm ambiance',
+    caption: 'Detail V',
+  },
+  {
+    id: 's6',
+    src: images.gallery.detailVI,
+    alt: 'Wine cellar with bottles and glasses',
+    caption: 'Detail VI',
+  },
+]

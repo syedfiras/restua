@@ -1,30 +1,38 @@
-import { motion } from 'framer-motion'
-import { imageReveal, reducedMotionVariant, viewportReveal } from '../../utils/motionVariants'
-import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion'
+import { useEffect, useRef } from 'react'
 import { cn } from '../../utils/cn'
+import { useGsapReveal } from '../../hooks/useGsapReveal'
 
-function ImageReveal({ src, srcSet, alt, className = '', imageClassName = '', sizes, priority = false }) {
-  const prefersReducedMotion = usePrefersReducedMotion()
+function ImageReveal({
+  src,
+  alt,
+  className = '',
+  imageClassName = '',
+  aspectRatio,
+  priority = false,
+}) {
+  const containerRef = useRef(null)
+  const { revealImage } = useGsapReveal()
+
+  useEffect(() => {
+    if (containerRef.current) {
+      revealImage(containerRef.current)
+    }
+  }, [revealImage])
 
   return (
-    <motion.figure
-      className={cn('image-reveal', className)}
-      variants={prefersReducedMotion ? reducedMotionVariant : imageReveal}
-      initial="hidden"
-      whileInView="visible"
-      viewport={viewportReveal}
+    <figure
+      ref={containerRef}
+      className={cn('image-reveal-mask relative overflow-hidden', className)}
+      style={aspectRatio ? { aspectRatio } : undefined}
     >
       <img
-        className={imageClassName}
         src={src}
-        srcSet={srcSet}
         alt={alt}
         loading={priority ? 'eager' : 'lazy'}
-        fetchPriority={priority ? 'high' : undefined}
         decoding="async"
-        sizes={sizes}
+        className={cn('w-full h-full object-cover scale-[1.15]', imageClassName)}
       />
-    </motion.figure>
+    </figure>
   )
 }
 
