@@ -1,73 +1,73 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { siteConfig } from '../../data/siteConfig'
 import { images } from '../../data/images'
 
 gsap.registerPlugin(ScrollTrigger)
 
-const TITLE_WORDS = ['ATELIER', 'NOCTURNE']
-
-const TITLE_STRUCTURE = TITLE_WORDS.map((word, wordIndex) => ({
-  word,
-  wordIndex,
-  letters: word.split('').map((char, i) => ({
-    char,
-    index: TITLE_WORDS.slice(0, wordIndex).join('').length + i,
-  })),
-}))
-
 function Hero() {
   const sectionRef = useRef(null)
   const imageRef = useRef(null)
-  const subtitleRef = useRef(null)
-  const lettersRef = useRef([])
+  const contentRef = useRef(null)
+  const labelRef = useRef(null)
+  const linesRef = useRef([])
+  const descriptionRef = useRef(null)
+  const actionsRef = useRef(null)
 
   useEffect(() => {
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const isMobile = window.matchMedia('(max-width: 640px)').matches
 
-    if (reduceMotion) {
-      gsap.set(lettersRef.current.filter(Boolean), { y: 0, rotateX: 0, opacity: 1 })
-      gsap.set(subtitleRef.current, { y: 0, opacity: 1 })
-      return undefined
-    }
+    if (reduceMotion) return undefined
 
     const ctx = gsap.context(() => {
-      gsap.from(imageRef.current, {
-        scale: isMobile ? 1.15 : 1.3,
-        filter: 'brightness(0.35)',
-        duration: 2,
-        ease: 'power3.out',
-      })
+      gsap.set(linesRef.current.filter(Boolean), { yPercent: 112, rotateX: -8 })
+
+      const intro = gsap.timeline({ defaults: { ease: 'power3.out' } })
+
+      intro
+        .from(imageRef.current, {
+          scale: 1.08,
+          filter: 'brightness(0.72) saturate(0.92)',
+          duration: 1.25,
+        })
+        .from(labelRef.current, { y: 18, opacity: 0, duration: 0.8 }, '-=0.8')
+        .to(
+          linesRef.current.filter(Boolean),
+          {
+            yPercent: 0,
+            rotateX: 0,
+            duration: 1,
+            stagger: 0.12,
+          },
+          '-=0.35',
+        )
+        .from(descriptionRef.current, { y: 18, opacity: 0, duration: 0.85 }, '-=0.45')
+        .from(
+          actionsRef.current.children,
+          {
+            y: 16,
+            opacity: 0,
+            duration: 0.75,
+            stagger: 0.08,
+          },
+          '-=0.45',
+        )
 
       gsap.to(imageRef.current, {
-        scale: 1,
-        filter: 'brightness(0.55)',
-        duration: 2,
-        ease: 'power3.out',
+        scale: 1.14,
+        y: -80,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: true,
+        },
       })
 
-      gsap.from(lettersRef.current.filter(Boolean), {
-        y: isMobile ? 36 : 100,
-        rotateX: isMobile ? 0 : -20,
-        opacity: 0,
-        duration: 1.2,
-        stagger: 0.05,
-        ease: 'power3.out',
-        delay: 0.3,
-      })
-
-      gsap.from(subtitleRef.current, {
-        y: 24,
-        opacity: 0,
-        duration: 0.8,
-        ease: 'power2.out',
-        delay: 1.2,
-      })
-
-      gsap.to(imageRef.current, {
-        y: isMobile ? -40 : -80,
+      gsap.to(contentRef.current, {
+        y: 70,
+        opacity: 0.78,
         ease: 'none',
         scrollTrigger: {
           trigger: sectionRef.current,
@@ -78,100 +78,85 @@ function Hero() {
       })
     }, sectionRef)
 
-    const handleMouseMove = (e) => {
-      if (isMobile) return
-      const { clientX, clientY } = e
-      const x = (clientX / window.innerWidth - 0.5) * 24
-      const y = (clientY / window.innerHeight - 0.5) * 12
-      gsap.to(imageRef.current, { x, y, duration: 0.8, ease: 'power2.out' })
-    }
-
-    const section = sectionRef.current
-    section?.addEventListener('mousemove', handleMouseMove)
-
-    return () => {
-      ctx.revert()
-      section?.removeEventListener('mousemove', handleMouseMove)
-    }
+    return () => ctx.revert()
   }, [])
+
+  const handleScrollTo = (event, id) => {
+    event.preventDefault()
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
 
   return (
     <section
       id="hero"
       ref={sectionRef}
-      className="relative min-h-[100svh] h-[100svh] overflow-hidden flex items-center justify-center bg-[#090909]"
+      className="relative isolate flex min-h-[100svh] items-center overflow-hidden bg-[#11100e] text-[#fffaf0]"
     >
-      <div className="absolute inset-0 z-0 overflow-hidden">
-        <img
-          ref={imageRef}
-          src={images.hero}
-          alt="Dark atmospheric fine dining restaurant interior"
-          className="w-full h-[120%] object-cover will-change-transform saturate-[0.9]"
-        />
-      </div>
-
-      <div className="absolute inset-0 z-[1] bg-gradient-to-b from-[#090909]/90 via-[#090909]/55 to-[#090909]/92" />
-
-      <div
-        className="absolute inset-0 z-[1] opacity-[0.04] pointer-events-none"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
-          backgroundSize: '180px 180px',
-        }}
-        aria-hidden="true"
+      <img
+        ref={imageRef}
+        src={images.hero}
+        alt="Complete luxury restaurant dining room interior"
+        loading="eager"
+        decoding="async"
+        fetchPriority="high"
+        className="absolute inset-0 z-0 h-[115%] w-full object-cover object-center"
       />
 
-      <div className="relative z-[2] w-full max-w-5xl text-center px-5 sm:px-6 pt-[calc(var(--nav-height)+1rem)] pb-24 sm:pb-20">
-        <h1
-          className="font-display font-semibold text-white tracking-tight leading-[0.95] text-[clamp(2.25rem,10vw,5rem)] [text-shadow:0_2px_24px_rgba(0,0,0,0.45)]"
-          style={{ perspective: '1000px' }}
-        >
-          {TITLE_STRUCTURE.map(({ word, wordIndex, letters }) => (
-            <span
-              key={word}
-              className={`block ${wordIndex === 0 ? 'mb-1 sm:mb-0' : ''} sm:inline sm:whitespace-nowrap`}
-            >
-              {wordIndex > 0 && (
-                <span className="hidden sm:inline" aria-hidden="true">
-                  {'\u00A0'}
-                </span>
-              )}
-              {letters.map(({ char, index }) => (
+      <div className="absolute inset-0 z-[1] bg-[linear-gradient(90deg,rgba(0,0,0,0.94)_0%,rgba(0,0,0,0.76)_48%,rgba(0,0,0,0.42)_100%)]" />
+      <div className="absolute inset-0 z-[1] bg-[radial-gradient(circle_at_72%_42%,rgba(184,145,79,0.12),transparent_34%),radial-gradient(circle_at_50%_100%,rgba(0,0,0,0.72),transparent_44%)]" />
+      <div className="absolute inset-0 z-[2] opacity-[0.1] [background-image:url('data:image/svg+xml,%3Csvg_viewBox=%220_0_256_256%22_xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter_id=%22n%22%3E%3CfeTurbulence_type=%22fractalNoise%22_baseFrequency=%220.85%22_numOctaves=%223%22_stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect_width=%22100%25%22_height=%22100%25%22_filter=%22url(%23n)%22/%3E%3C/svg%3E')]" />
+
+      <div className="page-container relative z-10 pt-[calc(var(--nav-height)+3rem)]">
+        <div ref={contentRef} className="max-w-3xl drop-shadow-[0_18px_45px_rgba(0,0,0,0.8)]">
+          <p
+            ref={labelRef}
+            className="mb-6 font-body text-[0.72rem] font-bold uppercase tracking-[0.32em] text-[#F2C46D]"
+          >
+            Chef's Tasting Collection
+          </p>
+
+          <h1 className="font-display text-[clamp(4.2rem,9.4vw,8rem)] font-semibold leading-[0.88] text-[#FFF8EA] [letter-spacing:0]">
+            {['Seasonal Plates', 'For Midnight Dining'].map((line, index) => (
+              <span key={line} className="block overflow-hidden pb-2 [perspective:900px]">
                 <span
-                  key={`${word}-${char}-${index}`}
-                  ref={(el) => {
-                    lettersRef.current[index] = el
+                  ref={(element) => {
+                    linesRef.current[index] = element
                   }}
-                  className="inline-block"
-                  style={{ transformStyle: 'preserve-3d' }}
+                  className="block will-change-transform"
                 >
-                  {char}
+                  {line}
                 </span>
-              ))}
-            </span>
-          ))}
-        </h1>
+              </span>
+            ))}
+          </h1>
 
-        <p
-          ref={subtitleRef}
-          className="mt-5 sm:mt-6 text-base sm:text-lg md:text-xl text-white/75 font-accent italic tracking-wide max-w-xs sm:max-w-none mx-auto"
-        >
-          {siteConfig.tagline}
-        </p>
+          <p
+            ref={descriptionRef}
+            className="mt-7 max-w-xl font-body text-base font-medium leading-8 text-[#F4E5CA] sm:text-lg"
+          >
+            A cinematic tasting menu shaped by fire, season, and restraint, served with
+            rare pairings in an intimate candlelit dining room.
+          </p>
+
+          <div ref={actionsRef} className="mt-9 flex flex-col gap-4 sm:flex-row">
+            <a
+              href="#experiences"
+              onClick={(event) => handleScrollTo(event, 'experiences')}
+              className="group inline-flex min-h-12 items-center justify-center rounded-full bg-[#FFF8EA] px-8 font-body text-xs font-semibold uppercase tracking-[0.18em] text-[#201814] shadow-[0_18px_45px_rgba(0,0,0,0.18)] transition duration-300 hover:-translate-y-1 hover:scale-[1.02] hover:bg-[#F2C46D] hover:shadow-[0_24px_58px_rgba(0,0,0,0.25)]"
+            >
+              Explore Menu
+            </a>
+            <a
+              href="#gallery"
+              onClick={(event) => handleScrollTo(event, 'gallery')}
+              className="group relative inline-flex min-h-12 items-center justify-center px-2 font-body text-xs font-semibold uppercase tracking-[0.18em] text-[#FFF8EA] transition duration-300 hover:-translate-y-0.5 hover:text-[#F2C46D]"
+            >
+              Watch The Kitchen
+              <span className="absolute bottom-2 left-2 h-px w-[calc(100%-1rem)] origin-left scale-x-40 bg-[#F2C46D] transition-transform duration-300 group-hover:scale-x-100" />
+            </a>
+          </div>
+        </div>
       </div>
-
-      <a
-        href="#about"
-        onClick={(e) => {
-          e.preventDefault()
-          document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })
-        }}
-        className="absolute bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 z-[2] flex flex-col items-center gap-3 text-white/50 text-[0.65rem] uppercase tracking-luxury hover:text-white transition-colors duration-300"
-        data-cursor="view"
-      >
-        <span>Scroll</span>
-        <div className="scroll-indicator__line" />
-      </a>
     </section>
   )
 }

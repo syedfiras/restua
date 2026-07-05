@@ -278,22 +278,6 @@ p {
   animation: scroll-indicator 1.8s var(--ease-luxury) infinite;
 }
 
-/* Hide custom cursor on touch devices */
-@media (hover: hover) and (pointer: fine) {
-  body {
-    cursor: none;
-  }
-
-  a,
-  button,
-  input,
-  textarea,
-  select,
-  [data-cursor='view'] {
-    cursor: none;
-  }
-}
-
 @media (hover: none) and (pointer: coarse) {
   .custom-cursor {
     display: none !important;

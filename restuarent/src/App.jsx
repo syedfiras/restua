@@ -1,4 +1,4 @@
-import CustomCursor from './components/ui/CustomCursor'
+
 import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
 import Hero from './components/sections/Hero'
@@ -13,7 +13,6 @@ function App() {
 
   return (
     <>
-      <CustomCursor />
       <div className="grain-overlay" aria-hidden="true" />
       <Navbar />
       <main>
